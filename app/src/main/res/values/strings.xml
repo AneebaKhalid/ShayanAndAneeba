@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FoodSharingApp</string>
+    <string name="title_activity_descr_view">DescrView</string>
+</resources>
