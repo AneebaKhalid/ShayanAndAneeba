@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //Action Bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Today's Menu");
         mRecyclerView = findViewById(R.id.my_recycler_view);
@@ -103,6 +104,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // Query to get Data from Firebase
         Query query = FirebaseDatabase.getInstance().getReference("Data");
         FirebaseRecyclerAdapter<MyData, ViewHolder> firebaseRecyclerAdapter;
         FirebaseRecyclerOptions<MyData> options =
@@ -127,20 +129,25 @@ public class HomeActivity extends AppCompatActivity {
 
                         String myTitle = getItem(position).getTitle();
                         String myDesc = getItem(position).getDescription();
-                        String myImage = getItem(position).getImage();
                         String myPrice = getItem(position).getPrice();
                         String myTime = getItem(position).getTime();
                         String myType = getItem(position).getType();
+
+                        // Image setting
                         String myImage2 = getItem(position).getImage2();
+                        String myImage = getItem(position).getImage();
 
                         Intent intent = new Intent(view.getContext(), PostDetailActivity.class);
-                        intent.putExtra("image", myImage);
+
                         intent.putExtra("title", myTitle);
                         intent.putExtra("description", myDesc);
                         intent.putExtra("price", myPrice);
                         intent.putExtra("time", myTime);
                         intent.putExtra("type", myType);
+
+                        // Image Setting
                         intent.putExtra("image2", myImage2);
+                        intent.putExtra("image", myImage);
 
                         startActivity(intent);
                     }
