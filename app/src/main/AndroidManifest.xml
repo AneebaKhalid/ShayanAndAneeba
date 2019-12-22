@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.foodsharingapp">
+    package="com.example.foodsharingapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PostDetailActivity"></activity>
+        <activity android:name=".UploadData"></activity>
+        <activity android:name=".PostDetailActivity" />
         <activity android:name=".SliderActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".LoginActivity" />
