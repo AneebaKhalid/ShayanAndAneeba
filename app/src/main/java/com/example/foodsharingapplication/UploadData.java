@@ -6,12 +6,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import java.net.URI;
+import java.net.URL;
+
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -45,6 +49,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import me.abhinay.input.CurrencyEditText;
 
@@ -66,6 +71,7 @@ public class UploadData extends AppCompatActivity {
 
     /*Image View*/
     ImageView imageView,imgView, mainImageView;
+    private static final int RESULT_LOAD_IMAGE =1;
 
     /*EditText*/
     private static CurrencyEditText editTextPrice;
@@ -359,27 +365,37 @@ public class UploadData extends AppCompatActivity {
 
         Log.i("Checking Storage", String.valueOf(ImageFolder));
 
-        if (!mArrayUri.isEmpty()){
+        if (!(mArrayUri.isEmpty())){
+            final HashMap<String,String> hashMap = new HashMap<>();
+
             for (uploadCount = 0; uploadCount < mArrayUri.size(); uploadCount++){
+               // Toast.makeText(UploadData.this, uploadCount, Toast.LENGTH_SHORT).show();
                 final Uri individualImage =  mArrayUri.get(uploadCount);
-                Log.i("Individual Image Uri:", String.valueOf(individualImage));
+                //Log.i("Individual Image Uri:", String.valueOf(individualImage));
                 final StorageReference imageName = ImageFolder.child("Image"+ individualImage.getLastPathSegment());
 
-                imageName.putFile(individualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                Task<Uri> uri = imageName.getDownloadUrl();
+                String url = uri.toString();
+                hashMap.put("imageLnk"+uploadCount,url);
+                uploadModel.setHashMap(hashMap);
+                storeLink();
+
+               /*imageName.putFile(individualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         imageName.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
                                 String url = String.valueOf(uri);
-                                Log.i("images Url", url);
                                 //sData.setUri(mArrayUri);
                                 //uploadModel.setmArrayUri(mArrayUri.get());
-
-                                HashMap<String,String> hashMap = new HashMap<>();
-                                hashMap.put("ImgLink",url);
+                                hashMap.put("ImgLink"+uploadCount ,url);
+                                Toast.makeText(UploadData.this, "Uploading data", Toast.LENGTH_SHORT).show();
                                 uploadModel.setHashMap(hashMap);
-                                storeLink();
+
+
+
+
                             }
                         });
                     }
@@ -396,10 +412,12 @@ public class UploadData extends AppCompatActivity {
                         Log.i("Progress","checking progress" + progress);
                         progressDialog.setMessage("Uploaded" + (int) progress + "%");
                     }
-                });
+                });*/
 
             }
+
         }
+
         else if(mImageUri != null){
 
             final StorageReference singleImageName = ImageFolder.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
@@ -456,6 +474,7 @@ public class UploadData extends AppCompatActivity {
         progressDialog.dismiss();
         Toast.makeText(UploadData.this, "Uploaded", Toast.LENGTH_SHORT).show();
     }
+
 
 
 

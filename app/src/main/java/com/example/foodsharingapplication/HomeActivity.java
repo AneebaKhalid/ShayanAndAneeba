@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HomeActivity extends AppCompatActivity {
@@ -86,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
     // /////////Search View Query and Populating View//////////
     private void firebaseSearch(String searchText){
         String query = searchText;
-        Query searchQuery = FirebaseDatabase.getInstance().getReference("Seller").child("User").orderByChild("foodTitle").startAt(query).endAt(query + "\uf0ff");
+        Query searchQuery = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers").orderByChild("foodTitle").startAt(query).endAt(query + "\uf0ff");
 
         FirebaseRecyclerOptions<UploadModel> searchOptions =
                 new FirebaseRecyclerOptions.Builder<UploadModel>().setQuery(searchQuery, UploadModel.class).build();
@@ -94,7 +95,7 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<UploadModel, ViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter< UploadModel, ViewHolder>(searchOptions) {
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull UploadModel model) {
-                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmImageUri(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
+                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmArrayString(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
             }
 
             @NonNull
@@ -167,7 +168,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // ///////////Query to get Data from Firebase and Populate HomePage///////////
 
-        Query query = FirebaseDatabase.getInstance().getReference("Seller").child("User");
+        Query query = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers");
         FirebaseRecyclerAdapter<UploadModel, ViewHolder> firebaseRecyclerAdapter;
         FirebaseRecyclerOptions<UploadModel> options =
                 new FirebaseRecyclerOptions.Builder<UploadModel>().setQuery(query, UploadModel.class).build();
@@ -176,7 +177,9 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull UploadModel model) {
-                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmImageUri(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
+
+                    holder.setDetails(getApplicationContext(), model.getFoodTitle(), model.getmArrayString(), model.getUser().getUserProfilePicUrl(), model.getFoodPrice(), model.getFoodPickUpDetail());
+
             }
 
             @NonNull
@@ -190,6 +193,8 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
 
+                        Toast.makeText(HomeActivity.this, "Sending hash image", Toast.LENGTH_SHORT).show();
+
                         String myTitle = getItem(position).getFoodTitle();
                         String myDesc = getItem(position).getFoodDescription();
                         String myPrice = getItem(position).getFoodPrice();
@@ -200,9 +205,7 @@ public class HomeActivity extends AppCompatActivity {
                         String available = getItem(position).getAvailabilityDays();
 
                         // Image setting
-                        //String myImage2 = getItem(position).getImage2();
-                        String myImage = getItem(position).getmImageUri();
-                        HashMap<String,String> hashImage = getItem(position).getHashMap();
+                        ArrayList<String> imagesArray = getItem(position).getmArrayString();
 
                         Intent intent = new Intent(view.getContext(), PostDetailActivity.class);
 
@@ -214,15 +217,9 @@ public class HomeActivity extends AppCompatActivity {
                         intent.putExtra("cuisineType",myCuisineType);
                         intent.putExtra("pay", pay);
                         intent.putExtra("availability",available);
+                        // Images Array List
+                        intent.putExtra("arrayImage", imagesArray);
 
-                        // Image Setting
-                        //intent.putExtra("image2", myImage2);
-                        if(myImage!=null) {
-                            intent.putExtra("image", myImage);
-                        }
-                        else if (hashImage!=null){
-                            intent.getStringArrayExtra("hashImage");
-                        }
 
                         startActivity(intent);
                     }
