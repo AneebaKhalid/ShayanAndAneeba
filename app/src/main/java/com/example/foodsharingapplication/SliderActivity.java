@@ -29,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SliderActivity extends AppCompatActivity {
@@ -101,7 +102,7 @@ public class SliderActivity extends AppCompatActivity {
     // /////////Search View Query and Populating View//////////
     private void firebaseSearch(String searchText){
         String query = searchText;
-        Query searchQuery = FirebaseDatabase.getInstance().getReference("Seller").child("User").orderByChild("foodTitle").startAt(query).endAt(query + "\uf0ff");
+        Query searchQuery = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers").orderByChild("foodTitle").startAt(query).endAt(query + "\uf0ff");
 
         FirebaseRecyclerOptions<UploadModel> searchOptions =
                 new FirebaseRecyclerOptions.Builder<UploadModel>().setQuery(searchQuery, UploadModel.class).build();
@@ -109,7 +110,7 @@ public class SliderActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<UploadModel, ViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter< UploadModel, ViewHolder>(searchOptions) {
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull UploadModel model) {
-                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmImageUri(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
+                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmArrayString(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
             }
 
             @NonNull
@@ -133,9 +134,7 @@ public class SliderActivity extends AppCompatActivity {
                         String available = getItem(position).getAvailabilityDays();
 
                         // Image setting
-                        //String myImage2 = getItem(position).getImage2();
-                        String myImage = getItem(position).getmImageUri();
-                        HashMap<String,String> hashImage = getItem(position).getHashMap();
+                        ArrayList<String> imagesArray = getItem(position).getmArrayString();
 
                         Intent intent = new Intent(view.getContext(), PostDetailActivity.class);
 
@@ -149,13 +148,7 @@ public class SliderActivity extends AppCompatActivity {
                         intent.putExtra("availability",available);
 
                         // Image Setting
-                        //intent.putExtra("image2", myImage2);
-                        if(myImage!=null) {
-                            intent.putExtra("image", myImage);
-                        }
-                        else if (hashImage!=null){
-                            intent.getStringArrayExtra("hashImage");
-                        }
+                        intent.putExtra("arrayImage", imagesArray);
 
                         startActivity(intent);
                     }
@@ -223,7 +216,7 @@ public class SliderActivity extends AppCompatActivity {
 
         // //////////////Query and Populating Recycler View 1 ///////////
 
-        Query query = FirebaseDatabase.getInstance().getReference("Seller").child("User");
+        Query query = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers");
         FirebaseRecyclerOptions<UploadModel> options =
                 new FirebaseRecyclerOptions.Builder<UploadModel>().setQuery(query, UploadModel.class).build();
 
@@ -231,7 +224,7 @@ public class SliderActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull UploadModel model) {
-                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmImageUri(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
+                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmArrayString(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
             }
 
             @NonNull
@@ -256,8 +249,8 @@ public class SliderActivity extends AppCompatActivity {
                         String myCuisineType = getItem(position).getFoodTypeCuisine();
                         String pay = getItem(position).getPayment();
                         String available = getItem(position).getAvailabilityDays();
-                        HashMap<String,String> hashImage = getItem(position).getHashMap();
-                        //String myImage2 = getItem(position).getImage2();
+
+                        ArrayList<String> imagesArray = getItem(position).getmArrayString();
 
 
                         Intent intent = new Intent(view.getContext(), PostDetailActivity.class);
@@ -270,14 +263,7 @@ public class SliderActivity extends AppCompatActivity {
                         intent.putExtra("cuisineType",myCuisineType);
                         intent.putExtra("pay", pay);
                         intent.putExtra("availability",available);
-
-                        //intent.putExtra("image2", myImage2);
-                        if(myImage!=null) {
-                            intent.putExtra("image", myImage);
-                        }
-                        else if (hashImage!=null){
-                            intent.putExtra("hashImage", hashImage);
-                        }
+                        intent.putExtra("arrayImage", imagesArray);
 
                         startActivity(intent);
 
@@ -296,7 +282,7 @@ public class SliderActivity extends AppCompatActivity {
 
         // //////////////Query and Populating Slider Recycler View 2 ///////////
 
-        Query query2 = FirebaseDatabase.getInstance().getReference("Seller").child("User");
+        Query query2 = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers");
         FirebaseRecyclerAdapter<UploadModel, ViewHolder> firebaseRecyclerAdapter2;
         FirebaseRecyclerOptions<UploadModel> options2 =
                 new FirebaseRecyclerOptions.Builder<UploadModel>().setQuery(query2, UploadModel.class).build();
@@ -305,11 +291,11 @@ public class SliderActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, final int position, @NonNull UploadModel model) {
-                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmImageUri(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
+                holder.setDetails(getApplicationContext(),model.getFoodTitle(),model.getmArrayString(),model.getUser().getUserProfilePicUrl(),model.getFoodPrice(),model.getFoodPickUpDetail());
                 holder.itemView.findViewById(R.id.fav).setOnClickListener(new View.OnClickListener() {
 
                     String title = getItem(position).getFoodTitle();
-                    Query q = FirebaseDatabase.getInstance().getReference("Seller").child("User").orderByChild("foodTitle");
+                    Query q = FirebaseDatabase.getInstance().getReference("Food").child("FoodByAllUsers").orderByChild("foodTitle");
                     Query favorites = q.equalTo(title);
                     @Override
                     public void onClick(View v) {
@@ -351,8 +337,7 @@ public class SliderActivity extends AppCompatActivity {
                         String myCuisineType = getItem(position).getFoodTypeCuisine();
                         String pay = getItem(position).getPayment();
                         String available = getItem(position).getAvailabilityDays();
-                        HashMap<String,String> hashImage = getItem(position).getHashMap();
-                        //String myImage2 = getItem(position).getImage2();
+                        ArrayList<String> imagesArray = getItem(position).getmArrayString();
 
 
                         Intent intent = new Intent(view.getContext(), PostDetailActivity.class);
@@ -365,14 +350,8 @@ public class SliderActivity extends AppCompatActivity {
                         intent.putExtra("cuisineType",myCuisineType);
                         intent.putExtra("pay", pay);
                         intent.putExtra("availability",available);
+                        intent.putExtra("arrayImage", imagesArray);
 
-                        //intent.putExtra("image2", myImage2);
-                        if(myImage!=null) {
-                            intent.putExtra("image", myImage);
-                        }
-                        else if (hashImage!=null){
-                            intent.putExtra("hashImage", hashImage);
-                        }
 
                         startActivity(intent);
 

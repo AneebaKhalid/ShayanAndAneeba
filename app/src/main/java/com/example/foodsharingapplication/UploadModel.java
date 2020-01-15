@@ -20,6 +20,7 @@ public class UploadModel {
 
     private ArrayList<Uri> mArrayUri;
     private String mImageUri;
+    private ArrayList<String> mArrayString;
 
 
     public UploadModel(){
@@ -138,5 +139,13 @@ public class UploadModel {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ArrayList<String> getmArrayString() {
+        return mArrayString;
+    }
+
+    public void setmArrayString(ArrayList<String> mArrayString) {
+        this.mArrayString = mArrayString;
     }
 }

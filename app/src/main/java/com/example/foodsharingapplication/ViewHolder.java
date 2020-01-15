@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
 public class ViewHolder extends RecyclerView.ViewHolder {
     View mView;
     public ViewHolder(View itemView){
@@ -26,19 +29,19 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void setDetails(Context ctx, String title, String image, String logo, String price, String time){
+    public void setDetails(Context ctx, String title, ArrayList<String> image, String logo, String price, String time){
         TextView mTitleView = mView.findViewById(R.id.textTitle);
         ImageView mImageView = mView.findViewById(R.id.imageView1);
         ImageView mLogo = mView.findViewById(R.id.imageView2);
         TextView mPrice = mView.findViewById(R.id.textPrice);
         TextView mTime = mView.findViewById(R.id.textTime);
 
-
+        String image1 = image.get(0);
         mTitleView.setText(title);
         mTime.setText(time);
         mPrice.setText(price);
         Picasso.get().load(logo).into(mLogo);
-        Picasso.get().load(image).into(mImageView);
+        Picasso.get().load(image1).into(mImageView);
 
     }
 

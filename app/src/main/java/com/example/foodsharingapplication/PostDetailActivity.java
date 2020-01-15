@@ -1,18 +1,21 @@
 package com.example.foodsharingapplication;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -38,8 +41,8 @@ public class PostDetailActivity extends AppCompatActivity {
 
         pTitle = findViewById(R.id.titlePost);
         pDescription = findViewById(R.id.descPost);
-        pImage = findViewById(R.id.imagePost);
-        pImage2 = findViewById(R.id.imagePost2);
+        //pImage = findViewById(R.id.imagePost);
+        //pImage2 = findViewById(R.id.imagePost2);
         pPrice = findViewById(R.id.pricePost);
         pTime = findViewById(R.id.timePost);
         pType = findViewById(R.id.typePost);
@@ -48,6 +51,7 @@ public class PostDetailActivity extends AppCompatActivity {
         pPayment = findViewById(R.id.paymentPost);
 
         //Get Data from Card
+        Intent intent = getIntent();
         String title = getIntent().getStringExtra("title");
         String desc = getIntent().getStringExtra("description");
         String image = getIntent().getStringExtra("image");
@@ -59,8 +63,7 @@ public class PostDetailActivity extends AppCompatActivity {
         String cuisineType = getIntent().getStringExtra("cuisineType");
         String payment = getIntent().getStringExtra("pay");
 
-        String[] imageString = getIntent().getStringArrayExtra("hashImage");
-
+        ArrayList<String> mArray = (ArrayList<String>)intent.getSerializableExtra("arrayImage");
 
 
 
@@ -75,30 +78,22 @@ public class PostDetailActivity extends AppCompatActivity {
         pPayment.setText(payment);
 
 
-        if(image==null) {
-            for (int i = 0; i < imageString.length; i++) {
+        for (int i = 0; i < mArray.size(); i++) {
 
-                ImageView imageV = new ImageView(this);
-                //imageV.setLayoutParams(new android.view.ViewGroup.LayoutParams(80,60));
-                //imageV.setMaxHeight(20);
-                //imageV.setMaxWidth(20);
+            String uri = mArray.get(i);
+            ImageView imageV = new ImageView(this);
+            Picasso.get().load(uri).into(imageV);
 
-
-                // Adds the view to the layout
-                pFlip.addView(imageV);
-
-            }
+            // Adds the view to the layout
+            pFlip.addView(imageV);
         }
-        else{
-            Picasso.get().load(image).into(pImage);
-        }
-       // Picasso.get().load(image2).into(pImage2);
+
 
 
         Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
         Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
 
-
+        // Adding animation to the image flip
         pFlip.setAutoStart(true);
         pFlip.setInAnimation(in);
         pFlip.setOutAnimation(out);
